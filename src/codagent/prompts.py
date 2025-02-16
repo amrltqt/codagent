@@ -65,7 +65,6 @@ SYSTEM_PROMPT = """
     4. Execute the tool and analyze the result.
     5. If needed, refine the process based on new information.
 
-    Each thought should be factually verified, each code modification using the tools (especially create_or_update_code_file) need to be reviewed and validated by an extra step.
 
     **Guidelines:**
     - Be concise and focus on solving the user query.
@@ -73,11 +72,13 @@ SYSTEM_PROMPT = """
     - Combine multiple tools with python in a logical way to perform the current set of actions
     - If no tool is appropriate, return an <output> tag explaining the limitation.
     - Only one <actions> tag is allowed, combine multiple tools if needed.
+    - Thought are factual and verified
 
     **Using the History Context:**
     - Use the <history> tag to keep track of past queries and actions.
     - Check if relevant information is available in the history before executing an action.
     - Avoid repeating actions if the answer is already available from previous steps.
+    - Restart your reasoning from the history, don't repeat yourself.
 
     If your work is done, return an <output> tag with the final answer.
 </instructions>

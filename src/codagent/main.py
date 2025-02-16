@@ -82,7 +82,7 @@ def main():
             result, error_flag = execute_secure_action(action, allowed_globals={
                 "get_directory_structure": get_directory_structure,
                 "read_source_file": read_source_file,
-                "create_or_update_source_file": create_or_update_code_file,
+                "create_or_update_code_file": create_or_update_code_file,
             })
 
             if error_flag:
