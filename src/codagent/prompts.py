@@ -56,8 +56,7 @@ SYSTEM_PROMPT = """
     - Each reasoning step should be enclosed in a <thought> tag.
     - If an action needs to be executed, provide the necessary Python code inside an <actions> tag.
     - The execution result will be displayed in the console.
-    - To ask a question, use an <output> tag.
-    - To share information or results, also use an <output> tag.
+    - To ask a question or share information, use an <output> tag.
 
     **Reasoning Process:**
     1. Identify what the query is asking.
@@ -65,6 +64,8 @@ SYSTEM_PROMPT = """
     3. Identify the most relevant tool and explain why.
     4. Execute the tool and analyze the result.
     5. If needed, refine the process based on new information.
+
+    Each thought should be factually verified
 
     **Guidelines:**
     - Be concise and focus on solving the user query.

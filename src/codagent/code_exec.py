@@ -7,7 +7,7 @@ from contextlib import redirect_stdout, redirect_stderr
 
 from codagent.tools.get_directory_structure import get_directory_structure
 from codagent.tools.read_source_file import read_source_file
-from codagent.tools.update_code_file import update_code_file
+from codagent.tools.update_code_file import create_or_update_code_file
 
 safe_globals = {
     "__builtins__": {
@@ -17,7 +17,7 @@ safe_globals = {
     },
     "read_source_file": read_source_file,
     "get_directory_structure": get_directory_structure,
-    "update_code_file": update_code_file,
+    "update_code_file": create_or_update_code_file,
 }
 
 

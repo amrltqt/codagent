@@ -13,7 +13,7 @@ from codagent.parser import ModelOutput
 
 from codagent.tools.get_directory_structure import get_directory_structure
 from codagent.tools.read_source_file import read_source_file
-from codagent.tools.update_code_file import update_code_file
+from codagent.tools.update_code_file import create_or_update_code_file
 
 from codagent.code_exec import execute_secure_action
 
@@ -81,7 +81,7 @@ def main():
             result, error_flag = execute_secure_action(action, allowed_globals={
                 "get_directory_structure": get_directory_structure,
                 "read_source_file": read_source_file,
-                "update_source_file": update_code_file,
+                "update_source_file": create_or_update_code_file,
             })
 
             if error_flag:
@@ -92,7 +92,7 @@ def main():
                 f"<action>{action}</action>\n<result>{result}</result>\n"
             )
             # Print the result to the console
-            # console.print(result)
+            console.print(result)
 
 
 if __name__ == "__main__":
