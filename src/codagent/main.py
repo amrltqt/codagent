@@ -1,3 +1,4 @@
+# This is a header comment
 
 import os
 import sys
@@ -14,6 +15,7 @@ from codagent.parser import ModelOutput
 from codagent.tools.get_directory_structure import get_directory_structure
 from codagent.tools.read_source_file import read_source_file
 from codagent.tools.create_or_update_code_file import create_or_update_code_file
+from codagent.tools.create_index import create_index
 
 from codagent.code_exec import execute_secure_action
 
@@ -97,6 +99,7 @@ def main():
                     "get_directory_structure": get_directory_structure,
                     "read_source_file": read_source_file,
                     "create_or_update_code_file": create_or_update_code_file,
+                    "create_index": create_index,
                 })
 
                 messages.append({

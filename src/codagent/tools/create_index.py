@@ -1,8 +1,19 @@
+# This is a header comment
+
+from pymilvus import MilvusClient
+import numpy as np
 
 from codagent.tools.get_directory_structure import get_directory_structure
 from codagent.tools.read_source_file import read_source_file
 
 CODE_BASE_ROOT = "./src"
+
+client = MilvusClient("./milvus_db.db")
+client.create_collection(
+    collection_name="code_index",
+    dimension=1024
+)
+
 
 def create_index():
     # Get the directory structure
@@ -24,9 +35,9 @@ def create_index():
 
 DESCRIPTION = {
     "name": "create_index",
-    "description": "Retrieve an index of all files in the code base",
+    "description": "Retrieve an index of all files in the code base as a dictionary",
     "parameters": [],
-    "returns": "A dictionary containing the content of all files as string in the code base",
+    "returns": "A dictionary containing the content of all files as string in the code base.",
     "callable": create_index,
 }
 

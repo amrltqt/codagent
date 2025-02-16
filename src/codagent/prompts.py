@@ -53,6 +53,7 @@ SYSTEM_PROMPT = """
     You have access to all functions described in <tools> and all python built-in functions in <builtins>. 
     These tools will help you progress toward solving the problem. 
     Each tool should exposes its function output to the console as it is the only way to check the result of the execution.
+    As such if you require a specific output, you should use the print function to display
 
     **Reasoning Process:**
     1. Identify what the query is asking.
