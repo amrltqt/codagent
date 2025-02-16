@@ -3,17 +3,16 @@ import logging
 from codagent.tools import read_source_file
 from codagent.tools import get_directory_structure
 from codagent.tools import create_or_update_code_file
+from codagent.tools import create_index
 
 logger = logging.getLogger(__name__)
 
 TOOLS = []
-for tool in [read_source_file, get_directory_structure, create_or_update_code_file]:
+for tool in [read_source_file, get_directory_structure, create_or_update_code_file, create_index]:
     if hasattr(tool, "DESCRIPTION"):
         TOOLS.append(tool.DESCRIPTION)
     else:
         logger.warning(f"Tool {tool.__name__} has no DESCRIPTION attribute.")
-
-
 
 logger.info(f"Registered {len(TOOLS)} tools")
 
@@ -46,41 +45,34 @@ SYSTEM_PROMPT = """
     Your goal is to leverage these tools to efficiently answer user queries by reasoning step by step.
 </role>
 <instructions>
-    To respond to the user query in the <query> tag, construct a step-by-step reasoning process, explaining each step within a <thought> tag.
+    To respond to the user query construct a step-by-step reasoning process, explaining each step within a <thought> tag.
 
-    Use the tools provided in the <tools> or <builtins> tag to gather information or perform actions on the codebase. 
-    These tools will help you progress toward solving the problem.
-    Each tool exposes its function output to the console.
-
-    **Expected Format:**
-    - Each reasoning step should be enclosed in a <thought> tag.
-    - If an action needs to be executed, provide the necessary Python code inside an <actions> tag.
-    - The execution result will be displayed in the console.
-    - To ask a question or share information, use an <output> tag.
+    To complement your reasoning or act on the code base (e.g., modify a file, execute code), use the execute_code function provided to make the code agent execute the function described in <tools>.
+       
+    We call tools the python function you can use to execute code.
+    You have access to all functions described in <tools> and all python built-in functions in <builtins>. 
+    These tools will help you progress toward solving the problem. 
+    Each tool should exposes its function output to the console as it is the only way to check the result of the execution.
 
     **Reasoning Process:**
     1. Identify what the query is asking.
     2. Determine if you need additional information before executing an action.
-    3. Identify the most relevant tool and explain why.
-    4. Execute the tool and analyze the result.
-    5. If needed, refine the process based on new information.
-
+    3. Identify the most relevant tools and explain why.
+    4. Reuse past results to build upon your current reasoning.
+    5. Each execute_code will provide you with the output of the function call and should be used to progress.
 
     **Guidelines:**
     - Be concise and focus on solving the user query.
     - Only use tools listed in the <tools> or <builtins> tags.
     - Combine multiple tools with python in a logical way to perform the current set of actions
-    - If no tool is appropriate, return an <output> tag explaining the limitation.
-    - Only one <actions> tag is allowed, combine multiple tools if needed.
-    - Thought are factual and verified
+    - If no tool is appropriate, explain it in the content output.
+    - You can use several call to execute_code if necessary, but it's better to combine them in a single call.
 
     **Using the History Context:**
-    - Use the <history> tag to keep track of past queries and actions.
-    - Check if relevant information is available in the history before executing an action.
-    - Avoid repeating actions if the answer is already available from previous steps.
-    - Restart your reasoning from the history, don't repeat yourself.
+    - Reuse previous results to build upon your current reasoning. 
+    - Restart your reasoning from the history, don't ever repeat yourself.
 
-    If your work is done, return an <output> tag with the final answer.
+    If your work is done, return an output content with the final answer.
 </instructions>
 <examples>
   <example>
@@ -104,13 +96,6 @@ SYSTEM_PROMPT = """
 - print
 - len
 </builtins>
-<history>
-%s
-</history>
-<query>
-%s
-</query>
-
 """
 
 with open("prompt.txt", "w") as f:

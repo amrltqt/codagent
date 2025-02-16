@@ -1,6 +1,7 @@
 
 import os
 import sys
+import json
 
 from mistralai import Mistral
 from rich.console import Console
@@ -25,76 +26,87 @@ model = "codestral-latest"
 # Initialize the Mistral client with the API key
 client = Mistral(api_key=api_key)
 
-def execute_query(query: str, history_list: list[str]):
-    # Join the history list into a single string
-    history = "\n".join(history_list)
-    # Send a chat completion request to the Mistral model
-    chat_response = client.chat.complete(
-        model= model,
-        temperature=0,
-        messages = [
-            {
-                "role": "system",
-                "content": prompts.SYSTEM_PROMPT % (history, query),
-            }
-        ]
-    )
-    # Extract the answer from the chat response
-    answer = chat_response.choices[0].message.content
-    print(answer)
-    # Return the parsed model output
-    return ModelOutput.from_output(answer)
 
 def main():
     # Get the query from command line arguments
     query = sys.argv.pop(1)
 
-    # Initialize an empty history list
-    history = []
     # Initialize the console for output
     console = Console()
+
+    messages = [
+        {
+            "role": "system",
+            "content": prompts.SYSTEM_PROMPT,
+        },
+        {
+            "role": "user",
+            "content": query,
+        }
+    ]
+
+    tools = [
+        {
+            "type": "function",
+            "function": {
+                "name": "execute_code",
+                "description": "Execute a piece of Python code",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "code": {
+                            "type": "string",
+                            "description": "Code to be executed",
+                        }
+                    },
+                },
+                "required": ["code"],
+            }
+        }
+    ]
+
 
     # Loop for a maximum of 5 iterations
     for step_index in range(5):
         console.print(f"[bold green]Step: {step_index}[/bold green]")
         # Execute the query and get the output
-        output = execute_query(query, history)
+        # Send a chat completion request to the Mistral model
+        chat_response = client.chat.complete(
+            model=model,
+            temperature=0,
+            messages=messages,
+            tools=tools,
+            tool_choice="auto",
+        )
 
-        if output.output is not None:
-            console.print(output.output)
-            break  # Stop dès qu'un output final est produit
+        answer = chat_response.choices[0].message
 
-        # Process each thought in the output
-        for thought in output.thoughts:
-            # Append the thought to the history
-            history.append(
-                f"<thought>{thought}</thought>\n"
-            )
-            # Print the thought to the console
-            console.print(thought)
+        if answer.tool_calls  and len(answer.tool_calls) > 0:
+            messages.append(answer)
+            for tool_call in answer.tool_calls:
+                id = tool_call.id
+                console.print(f"Tool call: {tool_call.function.name}")
+                console.print(tool_call.function.arguments)
 
-        # Process each action in the output
-        for action in output.actions:
-            # Print the action syntax to the console
-            syntax = Syntax(action, "python", theme="monokai", line_numbers=True)
-            console.print(syntax)
+                code = json.loads(tool_call.function.arguments)["code"]
 
-            result, error_flag = execute_secure_action(action, allowed_globals={
-                "get_directory_structure": get_directory_structure,
-                "read_source_file": read_source_file,
-                "create_or_update_code_file": create_or_update_code_file,
-            })
+                syntax = Syntax(code, "python", theme="monokai", line_numbers=True)
+                console.print(syntax)
 
-            if error_flag:
-                history.append("<error>true</error>\n")
-            
-            # Append the result to the history
-            history.append(
-                f"<action>{action}</action>\n<result>{result}</result>\n"
-            )
-            # Print the result to the console
-            console.print(result)
+                result, error_flag = execute_secure_action(code, allowed_globals={
+                    "get_directory_structure": get_directory_structure,
+                    "read_source_file": read_source_file,
+                    "create_or_update_code_file": create_or_update_code_file,
+                })
 
+                messages.append({
+                    "role": "tool",
+                    "name": tool_call.function.name,
+                    "content": result,
+                    "tool_call_id": id,
+                })
+        else:
+            console.print(answer.content)
 
 if __name__ == "__main__":
     main()
