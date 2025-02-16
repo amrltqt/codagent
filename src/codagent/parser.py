@@ -1,3 +1,7 @@
+# This file is used to parse the output of the model.
+# It is used to define the functions that will be used to parse the output of the model.
+
+
 import re
 
 from pydantic import BaseModel

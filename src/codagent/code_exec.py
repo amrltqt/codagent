@@ -1,6 +1,7 @@
+# This file is used to execute code in a secure environment.
+# It is used to define the functions that will be used to execute code.
 
 import io
-import sys
 import logging
 
 from contextlib import redirect_stdout, redirect_stderr

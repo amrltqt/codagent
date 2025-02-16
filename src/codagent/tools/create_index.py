@@ -1,4 +1,6 @@
-# This is a header comment
+# This file is used to create an index of all files in the code base.
+# It is used to define the functions that will be used to create the index.
+
 
 from pymilvus import MilvusClient
 import numpy as np
