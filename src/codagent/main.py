@@ -87,9 +87,7 @@ def main():
             messages.append(answer)
             for tool_call in answer.tool_calls:
                 id = tool_call.id
-                console.print(f"Tool call: {tool_call.function.name}")
-                console.print(tool_call.function.arguments)
-
+      
                 code = json.loads(tool_call.function.arguments)["code"]
 
                 syntax = Syntax(code, "python", theme="monokai", line_numbers=True)
@@ -101,6 +99,8 @@ def main():
                     "create_or_update_code_file": create_or_update_code_file,
                     "create_index": create_index,
                 })
+
+                console.print(result)
 
                 messages.append({
                     "role": "tool",

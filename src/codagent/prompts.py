@@ -65,6 +65,7 @@ SYSTEM_PROMPT = """
     **Guidelines:**
     - Be concise and focus on solving the user query.
     - Only use tools listed in the <tools> or <builtins> tags.
+    - DO NOT include or import functions that are not listed in the <tools> or <builtins> tags.
     - Combine multiple tools with python in a logical way to perform the current set of actions
     - If no tool is appropriate, explain it in the content output.
     - You can use several call to execute_code if necessary, but it's better to combine them in a single call.
