@@ -69,7 +69,7 @@ def main():
 
 
     # Loop for a maximum of 5 iterations
-    for step_index in range(5):
+    for step_index in range(10):
         console.print(f"[bold green]Step: {step_index}[/bold green]")
         # Execute the query and get the output
         # Send a chat completion request to the Mistral model
@@ -110,6 +110,7 @@ def main():
                 })
         else:
             console.print(answer.content)
+            break
 
 if __name__ == "__main__":
     main()
