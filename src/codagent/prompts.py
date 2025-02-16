@@ -70,9 +70,9 @@ SYSTEM_PROMPT = """
     **Guidelines:**
     - Be concise and focus on solving the user query.
     - Only use tools listed in the <tools> or <builtins> tags.
-    - If multiple tools could be useful, prioritize the most direct solution.
+    - Combine multiple tools with python in a logical way to perform the current set of actions
     - If no tool is appropriate, return an <output> tag explaining the limitation.
-    - Follow the examples provided in the <examples> tag to structure your response effectively.
+    - Only one <actions> tag is allowed, combine multiple tools if needed.
 
     **Using the History Context:**
     - Use the <history> tag to keep track of past queries and actions.

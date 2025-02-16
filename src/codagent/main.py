@@ -41,6 +41,7 @@ def execute_query(query: str, history_list: list[str]):
     )
     # Extract the answer from the chat response
     answer = chat_response.choices[0].message.content
+    print(answer)
     # Return the parsed model output
     return ModelOutput.from_output(answer)
 
