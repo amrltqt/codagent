@@ -5,7 +5,6 @@ import sys
 from mistralai import Mistral
 from rich.console import Console
 from rich.syntax import Syntax
-from rich.progress import Progress
 
 from codagent import prompts
 
@@ -13,7 +12,7 @@ from codagent.parser import ModelOutput
 
 from codagent.tools.get_directory_structure import get_directory_structure
 from codagent.tools.read_source_file import read_source_file
-from codagent.tools.update_code_file import create_or_update_code_file
+from codagent.tools.create_or_update_code_file import create_or_update_code_file
 
 from codagent.code_exec import execute_secure_action
 
@@ -21,6 +20,7 @@ from codagent.code_exec import execute_secure_action
 api_key = os.environ["MISTRAL_API_KEY"]
 # Define the model to use
 model = "codestral-latest"
+# model = "mistral-large-latest"
 
 # Initialize the Mistral client with the API key
 client = Mistral(api_key=api_key)
@@ -81,7 +81,7 @@ def main():
             result, error_flag = execute_secure_action(action, allowed_globals={
                 "get_directory_structure": get_directory_structure,
                 "read_source_file": read_source_file,
-                "update_source_file": create_or_update_code_file,
+                "create_or_update_source_file": create_or_update_code_file,
             })
 
             if error_flag:

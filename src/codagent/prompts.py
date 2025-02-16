@@ -2,12 +2,12 @@ import logging
 
 from codagent.tools import read_source_file
 from codagent.tools import get_directory_structure
-from codagent.tools import update_code_file
+from codagent.tools import create_or_update_code_file
 
 logger = logging.getLogger(__name__)
 
 TOOLS = []
-for tool in [read_source_file, get_directory_structure, update_code_file]:
+for tool in [read_source_file, get_directory_structure, create_or_update_code_file]:
     if hasattr(tool, "DESCRIPTION"):
         TOOLS.append(tool.DESCRIPTION)
     else:
@@ -65,7 +65,7 @@ SYSTEM_PROMPT = """
     4. Execute the tool and analyze the result.
     5. If needed, refine the process based on new information.
 
-    Each thought should be factually verified
+    Each thought should be factually verified, each code modification using the tools (especially create_or_update_code_file) need to be reviewed and validated by an extra step.
 
     **Guidelines:**
     - Be concise and focus on solving the user query.
